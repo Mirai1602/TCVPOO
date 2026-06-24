@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test de Comprensión Verbal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 14px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar .brand {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .navbar .timer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background-color: #1a252f;
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    .navbar .timer svg {
+      width: 18px;
+      height: 18px;
+      fill: #e74c3c;
+    }
+
+    #timer-display {
+      color: #e74c3c;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* Main content */
+    main {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* Section header */
+    .section-header {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #2980b9;
+    }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .section-header p {
+      font-size: 0.95rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Question card */
+    .question-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .question-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .question-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #2980b9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .question-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .option-label:hover {
+      border-color: #2980b9;
+      background-color: #eaf4fb;
+    }
+
+    .option-label input[type="radio"] {
+      accent-color: #2980b9;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .option-label input[type="radio"]:checked + span {
+      color: #2980b9;
+      font-weight: 600;
+    }
+
+    .option-label:has(input[type="radio"]:checked) {
+      border-color: #2980b9;
+      background-color: #eaf4fb;
+    }
+
+    /* Submit button */
+    .submit-wrapper {
+      text-align: center;
+      margin-top: 36px;
+    }
+
+    .btn-submit {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 14px 48px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #1f6391;
+    }
+  </style>
+</head>
+<body>
+<!-- Student name display (hidden until test starts) -->
+  <div id="student-greeting" style="display:none; max-width:860px; margin: 32px auto 0; padding: 0 20px;">
+    <div style="
+      background: linear-gradient(135deg, #2980b9 0%, #1f6391 100%);
+      border-radius: 12px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 10px rgba(41, 128, 185, 0.25);
+    ">
+      <div style="
+        width: 48px;
+        height: 48px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      ">
+        <svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:#fff;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+      </div>
+      <div>
+        <p style="color:rgba(255,255,255,0.75);font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Estudiante</p>
+        <p id="greeting-name" style="color:#fff;font-size:1.15rem;font-weight:700;margin:0;"></p>
+      </div>
+    </div>
+  </div>
+
+<!-- Profile Selection Overlay -->
+  <div id="profile-overlay" style="
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 62, 80, 0.85);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  ">
+
+    <!-- Step 1: Select profile -->
+    <div id="step-select" style="
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    ">
+      <div style="
+        width: 64px;
+        height: 64px;
+        background: #eaf4fb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+      ">
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:#2980b9;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+      </div>
+      <h2 style="font-size:1.4rem;color:#2c3e50;margin-bottom:8px;">Bienvenido/a</h2>
+      <p style="font-size:0.95rem;color:#666;margin-bottom:32px;line-height:1.6;">
+        Selecciona tu perfil para continuar con el Test de Comprensión Verbal.
+      </p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <button onclick="showStudentStep()" style="
+          flex: 1;
+          min-width: 140px;
+          background: #2980b9;
+          color: #fff;
+          border: none;
+          padding: 16px 24px;
+          border-radius: 10px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        "
+        onmouseover="this.style.background='#1f6391'"
+        onmouseout="this.style.background='#2980b9'">
+          <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#fff;" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm-6.94 9.75L12 21l6.94-8.25A9.96 9.96 0 0 1 12 15a9.96 9.96 0 0 1-6.94-2.25z"/>
+          </svg>
+          Estudiante
+        </button>
+        <button onclick="goToPsychologist()" style="
+          flex: 1;
+          min-width: 140px;
+          background: #27ae60;
+          color: #fff;
+          border: none;
+          padding: 16px 24px;
+          border-radius: 10px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        "
+        onmouseover="this.style.background='#1e8449'"
+        onmouseout="this.style.background='#27ae60'">
+          <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#fff;" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+          </svg>
+          Psicólogo
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Student form -->
+    <div id="step-student" style="
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      display: none;
+    ">
+      <button onclick="showSelectStep()" style="
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #2980b9;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 24px;
+        padding: 0;
+      ">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#2980b9;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+        Volver
+      </button>
+      <div style="
+        width: 64px;
+        height: 64px;
+        background: #eaf4fb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+      ">
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:#2980b9;" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm-6.94 9.75L12 21l6.94-8.25A9.96 9.96 0 0 1 12 15a9.96 9.96 0 0 1-6.94-2.25z"/>
+        </svg>
+      </div>
+      <h2 style="font-size:1.4rem;color:#2c3e50;margin-bottom:8px;">Datos del Estudiante</h2>
+      <p style="font-size:0.95rem;color:#666;margin-bottom:28px;line-height:1.6;">
+        Completa los siguientes datos para iniciar el test.
+      </p>
+      <form id="student-form" novalidate onsubmit="startTest(event)" style="text-align:left;">
+        <div style="margin-bottom:18px;">
+          <label for="student-name" style="display:block;font-size:0.9rem;font-weight:600;color:#2c3e50;margin-bottom:6px;">
+            Nombre completo <span style="color:#e74c3c;">*</span>
+          </label>
+          <input
+            type="text"
+            id="student-name"
+            placeholder="Ej: Ana García López"
+            required
+            autocomplete="name"
+            style="
+              width: 100%;
+              padding: 11px 14px;
+              border: 2px solid #e0e0e0;
+              border-radius: 8px;
+              font-size: 0.95rem;
+              outline: none;
+              transition: border-color 0.2s;
+              box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='#2980b9'"
+            onblur="this.style.borderColor='#e0e0e0'"
+          />
+          <span id="name-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa tu nombre completo.</span>
+        </div>
+        <div style="margin-bottom:28px;">
+          <label for="student-email" style="display:block;font-size:0.9rem;font-weight:600;color:#2c3e50;margin-bottom:6px;">
+            Correo electrónico <span style="color:#e74c3c;">*</span>
+          </label>
+          <input
+            type="email"
+            id="student-email"
+            placeholder="Ej: ana@correo.com"
+            required
+            autocomplete="email"
+            style="
+              width: 100%;
+              padding: 11px 14px;
+              border: 2px solid #e0e0e0;
+              border-radius: 8px;
+              font-size: 0.95rem;
+              outline: none;
+              transition: border-color 0.2s;
+              box-sizing: border-box;
+            "
+            onfocus="this.style.borderColor='#2980b9'"
+            onblur="this.style.borderColor='#e0e0e0'"
+          />
+          <span id="email-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa un correo electrónico válido.</span>
+        </div>
+        <button type="submit" style="
+          width: 100%;
+          background: #2980b9;
+          color: #fff;
+          border: none;
+          padding: 14px;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        "
+        onmouseover="this.style.background='#1f6391'"
+        onmouseout="this.style.background='#2980b9'">
+          Iniciar Test
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Prevent timer from running until test starts
+    let testStarted = false;
+
+    function showSelectStep() {
+      document.getElementById('step-select').style.display = 'block';
+      document.getElementById('step-student').style.display = 'none';
+    }
+
+    function showStudentStep() {
+      document.getElementById('step-select').style.display = 'none';
+      document.getElementById('step-student').style.display = 'block';
+    }
+
+    function goToPsychologist() {
+      // Replace the href below with the actual OpenXava URL when available
+      window.location.href = '/openxava/Psicologo/index.jsp';
+    }
+
+    function startTest(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('student-name');
+      const emailInput = document.getElementById('student-email');
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      //Y por aquí la validacion del formato de correo
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+     //Si los campos estan vacioos no deja pasar pa iniciar tect
+      let valid = true;
+
+      if (!nameInput.value.trim()) {
+        nameError.style.display = 'block';
+        nameInput.style.borderColor = '#e74c3c';
+        valid = false;
+      } else {
+        nameError.style.display = 'none';
+        nameInput.style.borderColor = '#e0e0e0';
+      }
+
+      if (!emailRegex.test(emailInput.value.trim())) {
+        emailError.style.display = 'block';
+        emailInput.style.borderColor = '#e74c3c';
+        valid = false;
+      } else {
+        emailError.style.display = 'none';
+        emailInput.style.borderColor = '#e0e0e0';
+      }
+
+      if (!valid) return;
+
+      // Store student info
+      window.studentData = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim()
+      };
+
+      // Hide overlay and start timer
+      document.getElementById('profile-overlay').style.display = 'none';
+      testStarted = true;
+      startTimer();
+    }
+  </script>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="banner">
+    <span class="brand">Test de Comprensión Verbal</span>
+    <div class="timer" aria-live="polite" aria-label="Tiempo transcurrido">
+      <!-- Clock icon -->
+      <svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477
+          10-10S17.523 2 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0
+          16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+      </svg>
+      <span id="timer-display">00:00</span>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+
+    <!-- Section header: add your test title / instructions here -->
+    <div class="section-header">
+      <h2>Instrucciones</h2>
+      <p>Usted va a encontrar en estas páginas diversos pensamientos (o proverbios) de autores clásicos o contemporáneos, acompañados cada uno de tres pensamientos (o proverbios) precedido de las letras A, B, y C. 
+        Usted debe buscar aquel pensamiento (o proverbio) cuya significación es la que más se aproxima o la que menos se separa del pensamiento principal. 
+        Marque con una equis (x) en la columna "COMPRENSIÓN VERBAL" de su Hoja de Respuestas la letra que corresponda al pensamiento que más se aproxima al principal. 
+        Recuerde que debe dar una sola respuesta por ejercicio.
+
+        Si usted se equivoca tache la letra señalada y marque con una equis (x) la nueva respuesta. 
+
+    
+    </p>
+    </div>
+
+    <div class="section-header">
+      <h2>Recuerde que..</h2>
+      <p>Marque la respuesta correcta al lado derecho del número 1 de columna "COMPRENSIÓN VERBAL" de su Hoja de Respuesta. 
+         Dispondrá de 15 minutos para hacer esta prueba. 
+         Procure hacer el máximo de ejercicios trabajando lo más rápidamente que pueda, sin perder tiempo. Si no encuentra la solución a un ejercicio pase al siguiente: usted puede intentar resolverlo al final si dispone de tiempo. 
+
+
+    
+    </p>
+    </div>
+
+    <form id="test-form" novalidate>
+
+      <!-- Pregunta 1 -->
+      <div class="question-card" role="group" aria-labelledby="q1-label">
+        <p class="question-number">Pregunta 1</p>
+        <p class="question-text" id="q1-label">
+        2. SI LA TECNICA NOS HACE PERDER EL ESPIRITU, ES QUE NO MERECEMOS CONSERVARLO. 
+           (J. ROSTAND) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q1" value="a" required />
+            <span>A- Si no dejamos invadir por la técnica estamos perdidos.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q1" value="b" />
+            <span>B- El espíritu y la técnica son irreconciliables.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q1" value="c" />
+            <span> C - Si el hombre se destruye por la técnica sólo él es responsable de su derrota. </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="question-card" role="group" aria-labelledby="q2-label">
+        <p class="question-number">Pregunta 2</p>
+        <p class="question-text" id="q2-label">
+         Y POR TANTO NO PUEDE HACER NADA PARA LA FELICIDAD DE LOS DEMAS AQUEL QUE ES 
+         INCAPAZ DE SER FELIZ EL MISMO. (A. GIDE) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q2" value="a" required />
+            <span>A- La felicidad es lo único que puede darse sin poseerla. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q2" value="b" />
+            <span>B-Toda felicidad es altruista. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q2" value="c" />
+            <span>C- Seamos felices para poder hacer felices a otros</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Pregunta 3 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 3</p>
+        <p class="question-text" id="q3-label">
+         PARA QUE PONER ESTA PALABRA EN SINGULAR QUE SE NOS ESCAPA, SI PUESTA EN 
+         PLURAL LA ENCONTRAMOS TODOS LOS DIAS. (COLETTE) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El mito de la felicidad absoluta oculta la realidad de las alegrías cotidianas. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- La felicidad es un mito que nos resulta imposible alcanzar.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>Esperemos la felicidad que pueda traernos el mañana. </span>
+          </label>
+        </div>
+      </div>
+
+
+      
+      <!-- Pregunta 4 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 4</p>
+        <p class="question-text" id="q3-label">
+        PARA CADA UNO ES BARBARIE AQUELLO QUE NO LE ES FAMILIAR (MONTAIGNE) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-El uso define la barbarie como aquello que es propio de un individuo. . </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- La noción de barbarie es relativa en cada civilización. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- La barbarie es difícil de definir.  </span>
+          </label>
+        </div>
+      </div>
+
+          <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 5</p>
+        <p class="question-text" id="q3-label">
+        6. EN UN ACTO TAN COMPLEJO COMO ES EL JUICIO ESTETICO DISTINGUIMOS CON DIFICULTAD 
+        AQUELLO QUE NOSOTROS APORTAMOS DE LO QUE PROCEDE DE LAS ADQUISICIONES CULTURALES. 
+        (J. CHARBONNEAUX) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Es difícil separar el juicio personal de la impregnación recibida cuando decimos:"Esto es bonito".  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- El juicio estético es complejo ya que pone en juego toda una educación. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Un ser sin cultura no podrá emitir un juicio estético.  </span>
+          </label>
+        </div>
+      </div>
+
+
+       <!-- Pregunta 6 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 6</p>
+        <p class="question-text" id="q3-label">
+          RIE BIEN EL QUE RIE ULTIMO  
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Es necesario esperar haber pasado la última para conocer el final de la historia.</span>
+             </label>
+            <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- pícaro, pícaro y medio.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- Lo importante es decir la última palabra.   </span>
+          </label>
+        </div>
+      </div>
+      
+
+       <!-- Pregunta 7 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 7</p>
+        <p class="question-text" id="q3-label">
+         UNA GOLONDRINA NO HACE VERANO 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-  Las apariencias no son la realidad. </span>
+           </label>
+            <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- De la mano a la boca se pierde la sopa.   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- Debe tenerse cuidado con las apariencias, son a menudo engañosas.   </span>
+          </label>
+        </div>
+      </div>
+
+
+      <!-- Pregunta 8 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 8</p>
+        <p class="question-text" id="q3-label">
+         LA SOBREPROTECCIÓN RETRASA LA MADUREZ DEL NIÑO, CUANDO PODRIA PENSARSE QUE 
+         LO BENEFICIA. (P. GASCAR) 
+
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-Un niño sobreprotegido por sus padres se beneficia de una madurez psicológica más lenta, 
+                 por lo que tiene un yo más sólido. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- -Es necesario proteger incluso con exceso, al niño que madura lentamente.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- Si los padres se preocupasen menos de proteger al niño, éste llegarla más rápidamente a ser autónomo. 
+  </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 9 -->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 9</p>
+        <p class="question-text" id="q3-label">
+         QUIEN HA APRENDIDO A MORIR, HA DESAPRENDIDO A SERVIR.  (MONTAIGNE) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-No puede hacerse esclavo a aquel que no tiene medio a la muerte.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Es necesario saber servir para saber morir.   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C-Si no se sirve a nadie no se aprecia la vida. 
+  </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 10-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 10</p>
+        <p class="question-text" id="q3-label">
+         LOS PERROS LADRAN, LA CARAVANA SIGUE. 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Para un corazón valiente, nada hay imposible.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Haz bien y deja que digan.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C-El hombre que sigue su quimera, no oye las advertencias que le da el cielo </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 11-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 11</p>
+        <p class="question-text" id="q3-label">
+       . LOS ÁRBOLES NO DEJAN VER EL BOSQUE. 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Siempre se ve la paja en el ojo ajeno y no se ve la viga en el propio. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Quien mira demasiado por donde va, no ve a donde debe ir.   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C-Aquellos que se aplican a las pequeñas cosas generalmente se vuelven incapaces de las grandes. </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 12-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 12</p>
+        <p class="question-text" id="q3-label">
+           ES PRECISO QUE UNA PUERTA BONITA SEA PRIMERO UNA PUERTA. (ALAIN)
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El objeto útil deja de ser bello.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Es bastante más bonito porque es inútil.    </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- Lo funcional es una condición necesaria para lo bello   </span>
+          </label>
+        </div>
+      </div>
+
+
+       <!-- Pregunta 13-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 13</p>
+        <p class="question-text" id="q3-label">
+           PUEDO NEGAR UNA COSA SIN VERME OBLIGADO A DESHONRARLA Y SIN NEGAR A LOS 
+            DEMAS EL DERECHO DE CREER EN ELLA. (A. CAMUS) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Incluso si soy escéptico debo respetar las ideas de los otros. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Cualquiera que sea mi opinión, mi compromiso no llega hasta la intolerancia.    </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span>C- Incluso si creo en una cosa no puedo imponerla a otros.     </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 14-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 14</p>
+        <p class="question-text" id="q3-label">
+        CUANTO MAS ALTO SUBE EL MONO, MAS SE LE VE EL TRASERO.  
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El hombre que se hace ver demasiado no tiene vida intima.   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- La nobleza obliga   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Una ascensión no está jamás exenta de peligro.</span>
+          </label>
+        </div>
+      </div>
+
+        <!-- Pregunta 15-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 15</p>
+        <p class="question-text" id="q3-label">
+        CUANTO MAS ALTO SUBE EL MONO, MAS SE LE VE EL TRASERO.  
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El hombre que se hace ver demasiado no tiene vida intima.   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- La nobleza obliga   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Una ascensión no está jamás exenta de peligro.</span>
+          </label>
+        </div>
+      </div>
+
+
+       <!-- Pregunta 18-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 18</p>
+        <p class="question-text" id="q3-label">
+        QUE IMPORTA LA BOTELLA SIEMPRE QUE SE TENGA LA BORRACHERA. 
+  
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El fin justifica los medios </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Es a menudo en las pequeñas ostras, donde se encuentran las más bellas perlas</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Los decorados están hechos de cartón, los accesorios en papel pero la magia del teatro suscita la ilusión. </span>
+          </label>
+        </div>
+      </div>
+
+
+      <!-- Pregunta 19-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 19</p>
+        <p class="question-text" id="q3-label">
+         A BURRA VIEJA, ALBARDA NUEVA. 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- El hábito no hace al monje. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- La riqueza ilumina la mediocridad.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Es en las viejas ollas donde se hace la mejor sopa.  </span>
+          </label>
+        </div>
+      </div>
+
+
+           <!-- Pregunta 21-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 21</p>
+        <p class="question-text" id="q3-label">
+         TERMINADA LA FIESTA, ADIOS AL SANTO.  
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- En la mayor parte del mundo, la prosperidad no tiene compañía más segura que la 
+                ignorancia y el olvido de los servicios prestados. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- El tiempo pasa y trae consigo recuerdos agradables.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- -Lo que el viento se llevó.   </span>
+          </label>
+        </div>
+      </div>
+
+      
+           <!-- Pregunta 21-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 21</p>
+        <p class="question-text" id="q3-label">
+         TERMINADA LA FIESTA, ADIOS AL SANTO.  
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- En la mayor parte del mundo, la prosperidad no tiene compañía más segura que la 
+                ignorancia y el olvido de los servicios prestados. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- El tiempo pasa y trae consigo recuerdos agradables.</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- -Lo que el viento se llevó.   </span>
+          </label>
+        </div>
+      </div>
+
+            <!-- Pregunta 22-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 22</p>
+        <p class="question-text" id="q3-label">
+         UNICAMENTE LA RISA ESCAPA AL CONTROL. (N. CLIFFORD BARNEY) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- La risa es el sonido del espíritu; ciertas risas parecen tontas como una pieza suena a falsa. (Ed. y J. Goncourt) 
+ </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-El hombre no ríe más que cunado sabe que una cosa es cómica. (A. Porchia) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- La risa se resiste cuando se la llama y explota cuando se la teme.    </span>
+          </label>
+        </div>
+      </div>
+
+            <!-- Pregunta 23-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 23</p>
+        <p class="question-text" id="q3-label">
+        MUCHAS PERSONAS PODRIAN VER SI SE QUITARAN SUS GAFAS. (F. HERBEL) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Ver me cuesta abrir los ojos a todo lo que no quisiera ver. (A. Porchia)  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-Disimula su rostro con una máscara, oculta su mirada con gafas. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Hay espíritus parecidos a espejos convexos o cóncavos que representan los objetos tar como los reciben, 
+              pero que no los reciben jamás tal como son. (J. Joubert)     </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 24-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 24</p>
+        <p class="question-text" id="q3-label">
+        ES MAS DIFICIL QUE PERDURE LA BUENA FORTUNA QUE LA MALA SI LAS HADAS HAN 
+        ADORNADO TU CUNA DESCONFIA. (ALAIN) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- Para vivir felices, vivamos ocultos. (Florian)   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-Seguir su estrella, no es elegir su vida.  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- El destino que designa, asigna.    </span>
+          </label>
+        </div>
+      </div>
+
+          <!-- Pregunta 25-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 25</p>
+        <p class="question-text" id="q3-label">
+        NO HAY GRANDES HOMBRES SIN UN GRAMO DE LOCURA. (DIDEROT) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A- No se ha llegado todavía a un acuerdo sobre si el genio es la perfección de lo que va a 
+                    morir, o la singularidad de lo que va a nacer. (P.J. Toulet) 
+   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-El genio, en definitiva, no es más que la forma de percibir de un modo poco usual (W. Jones)  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Los grandes hombres no son siempre aquellos que tienen más ingenio.     </span>
+          </label>
+        </div>
+      </div>
+
+
+         <!-- Pregunta 26-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 26</p>
+        <p class="question-text" id="q3-label">
+        HABLO CON LA IDEA DE CALLARME... Y HABLO. (A. PORCHIA)
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-Las palabras son los pensamientos lo que, el oro es al diamante; son necesarias para 
+                    ponerlos de manifiesto pero en poca cantidad. (Voltaire) 
+   </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-En muchos hombres la palabra precede al pensamiento. Saben solamente lo que piensan 
+             después de haber oído lo que dicen. (G. Le-Bon). </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- Sólo cuando uno piensa que no es escuchado y continúa hablando, es cuando empieza a 
+                      decir cosas que merecen ser escuchadas. (R. de Montesquieu). </span>
+          </label>
+        </div>
+      </div>
+
+
+      <!-- Pregunta 27-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 27</p>
+        <p class="question-text" id="q3-label">
+        LA VERDAD ES COMO DIOS, NO SE MUESTRA CON EL ROSTRO DESCUBIERTO (GOETHE)
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-La verdad no es una bella mujer escondida en el fondo de un pozo, 
+              sino un tímido pájaro que sólo la astucia puede apresar. (J. Conrad) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B-Una verdad muy clara pronto deja de ser una verdad fecunda. (G. Lebon)</span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- A menos que se ame la verdad no se sabrá conocerla. (B. Pascal) </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Pregunta 28-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 28</p>
+        <p class="question-text" id="q3-label">
+       EL ABURRIMIENTO ES QUIZAS UN PRIVILEGIO. LOS IMBECILES NO SIENTEN ABURRIRSE, 
+       QUIZAS NO SE ABURREN. (Ed. y J. de GONCOURT) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-No es uno de los menores méritos de la gente de mucho el saber aburrirse sin que lo parezca. </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- En el teatro, el recreo de la vista y el oído dificulta mucho la reflexión. (Goethe) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C-  Rosine: "El aburrimiento me mata". Fígaro: "Lo creo, no engorda más que a los tontos". (Beaumarchais)</span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 29-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 29</p>
+        <p class="question-text" id="q3-label">
+      CUANDO NO SE TIENE PELO, SE ENCUENTRAN RIDICULAS LAS CABELLERAS. 
+      (LEAUTAUD) 
+
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-Los viejos creen lamentarse de su tiempo, se equivocan, no se lamentan más que de su edad. (V. Hugo)  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- Tanto sabe la juventud como puede la vejez. (Proverbio) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C-  A los viejos les gusta dar buenos consejos para consolarse de no tener edad para dar malos ejemplos. (La Rochefoucault). </span>
+          </label>
+        </div>
+      </div>
+
+       <!-- Pregunta 30-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 30</p>
+        <p class="question-text" id="q3-label">
+        LO QUE PROBABLEMENTE FALSEA TODA LA VIDA, ES EL ESTAR CONVENCIDO DE QUE SE 
+        DICE LA VERDAD PORQUE SE DICE LO QUE SE PIENSA. (S. GUITRY).
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-A cada uno su verdad. (Pirandello)  </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- El principal uso que hacemos de nuestro amor a la verdad, es el de persuadirnos de que aquello que amamos es verdadero. (P. Nicole) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- El deseo de hablar de nosotros y de mostrar nuestros defectos del lado que queremos, constituye una gran parte de nuestra sinceridad (La Rochefoucault). </span>
+          </label>
+        </div>
+      </div>
+
+
+
+       <!-- Pregunta 31-->
+      <div class="question-card" role="group" aria-labelledby="q3-label">
+        <p class="question-number">Pregunta 31</p>
+        <p class="question-text" id="q3-label">
+        DESDE HACE TREINTA Y CINCO AÑOS REVIENTO DE ORGULLO, ES MI MANERA DE MORIR DE 
+        VERGUENZA. (JEAN PAUL SARTRE) 
+        </p>
+        <div class="options">
+          <label class="option-label">
+            <input type="radio" name="q3" value="a" required />
+            <span>A-Es necesario matar el orgullo sin herirlo, ya que si se le hiere no muere. (Rivarol). </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="b" />
+            <span>B- El orgullo que a menudo nos inspira tanta envidia también nos sirve a menudo para moderarla. (La Reocherfoucault) </span>
+          </label>
+          <label class="option-label">
+            <input type="radio" name="q3" value="c" />
+            <span> C- El amor propio encuentra su goce en el sugrafio y aprobación de los hombres, el último grado del orgullo es gozar de su desprecio. (S. de Meihan)  </span>
+          </label>
+        </div>
+      </div>
+
+
+
+
+
+
+      <div class="submit-wrapper">
+        <button type="submit" class="btn-submit">Enviar respuestas</button>
+      </div>
+
+    </form>
+  </main>
+
+  <script>
+    // Timer
+
+    //Con esto si llega a 25 ya no admité más respuestas 
+const MAX_SECONDS = 25 * 60;
+
+    function lockForm() {
+      const form = document.getElementById('test-form');
+      const inputs = form.querySelectorAll('input[type="radio"]');
+      const submitBtn = form.querySelector('.btn-submit');
+
+      inputs.forEach(input => {
+        input.disabled = true;
+      });
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Tiempo agotado';
+      submitBtn.style.backgroundColor = '#95a5a6';
+      submitBtn.style.cursor = 'not-allowed';
+
+      const notice = document.createElement('p');
+      notice.textContent = 'El tiempo límite de 25 minutos ha sido alcanzado. No se admiten más respuestas.';
+      notice.style.cssText = 'color:#e74c3c;font-weight:600;text-align:center;margin-bottom:16px;';
+      submitBtn.parentNode.insertBefore(notice, submitBtn);
+    }
+
+    let seconds = 0;
+    const timerDisplay = document.getElementById('timer-display');
+
+    function updateTimer() {
+      seconds++;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timerDisplay.textContent =
+        String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Form submit
+    document.getElementById('test-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearInterval(timerInterval);
+      const elapsed = timerDisplay.textContent;
+      alert('Respuestas enviadas. Tiempo total: ' + elapsed);
+    });
+// ─── Per-option EventListeners ───────────────────────────────────────────────
+const respuestasUser = {};
+
+document.querySelectorAll('input[type="radio"]').forEach(input => {
+  input.addEventListener('change', function () {
+    respuestasUser[this.name] = this.value;
+    console.log('Respuestas actuales:', respuestasUser);
+  });
+});
+
+// ─── Payload builder (answers + student data) ────────────────────────────────
+function buildPayload() {
+  return {
+    estudiante: {
+      nombre: window.studentData?.name  ?? '',
+      correo: window.studentData?.email ?? ''
+    },
+    respuestas: { ...respuestasUser },
+    tiempo_total: document.getElementById('timer-display').textContent
+  };
+}
+
+/*
+ * ─── BACKEND: Node.js + Express + pg ─────────────────────────────────────────
+ *
+ * 1. Install dependencies (run once in your project folder):
+ *    npm install express pg cors
+ *
+ * 2. Create server.js with the following content:
+ *
+ * ──────────────────────────────────────────────────────────────────────────────
+ * const express = require('express');
+ * const { Pool }  = require('pg');
+ * const cors      = require('cors');
+ *
+ * const app = express();
+ * app.use(cors());
+ * app.use(express.json());
+ *
+ * const pool = new Pool({
+ *   host:     process.env.PG_HOST     || 'localhost',
+ *   port:     process.env.PG_PORT     || 5432,
+ *   database: process.env.PG_DB       || 'test_verbal',
+ *   user:     process.env.PG_USER     || 'postgres',
+ *   password: process.env.PG_PASSWORD || 'tu_password'
+ * });
+ *
+ * // Run once to create the table:
+ * // CREATE TABLE resultados_test (
+ * //   id          SERIAL PRIMARY KEY,
+ * //   nombre      TEXT NOT NULL,
+ * //   correo      TEXT NOT NULL,
+ * //   respuestas  JSONB NOT NULL,
+ * //   tiempo_total TEXT,
+ * //   creado_en   TIMESTAMPTZ DEFAULT NOW()
+ * // );
+ *
+ * app.post('/api/resultados', async (req, res) => {
+ *   const { estudiante, respuestas, tiempo_total } = req.body;
+ *   try {
+ *     const result = await pool.query(
+ *       `INSERT INTO resultados_test (nombre, correo, respuestas, tiempo_total)
+ *        VALUES ($1, $2, $3, $4) RETURNING id`,
+ *       [estudiante.nombre, estudiante.correo, JSON.stringify(respuestas), tiempo_total]
+ *     );
+ *     res.json({ ok: true, id: result.rows[0].id });
+ *   } catch (err) {
+ *     console.error(err);
+ *     res.status(500).json({ ok: false, error: err.message });
+ *   }
+ * });
+ *
+ * app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+ * ──────────────────────────────────────────────────────────────────────────────
+ *
+ * 3. Start the server:
+ *    node server.js
+ */
+
+// ─── Submit: send payload to the Express API ─────────────────────────────────
+document.getElementById('test-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  clearInterval(timerInterval);
+
+  const payload = buildPayload();
+  console.log('Payload a enviar:', payload);
+
+  try {
+    const response = await fetch('http://localhost:3000/api/resultados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      alert(`Respuestas guardadas correctamente (ID: ${data.id}). Tiempo total: ${payload.tiempo_total}`);
+    } else {
+      alert('Error al guardar las respuestas: ' + data.error);
+    }
+  } catch (err) {
+    console.error('Error de red:', err);
+    alert('No se pudo conectar con el servidor. Verifica que el backend esté activo.');
+  }
+});
+
+function recopilarRespuestas() {
+      const form = document.getElementById('test-form');
+      const respuestasUsuario = {}; 
+
+      const radioGroups = {};
+      form.querySelectorAll('input[type="radio"]').forEach(input => {
+        if (!radioGroups[input.name]) {
+          radioGroups[input.name] = null;
+        }
+        if (input.checked) {
+          radioGroups[input.name] = input.value;
+        }
+      });
+
+      Object.assign(respuestasUsuario, radioGroups);
+      return respuestasUsuario;
+    }
+
+    let respuestasUsuario = {};
+
+    document.getElementById('test-form').addEventListener('change', function () {
+      respuestasUsuario = recopilarRespuestas();
+      console.log('Respuestas actuales:', respuestasUsuario);
+    });
+
+  </script>
+
+</body>
+</html>
