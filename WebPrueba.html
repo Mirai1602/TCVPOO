@@ -24,8 +24,7 @@
       align-items: center;
       background-color: #2c3e50;
       color: #fff;
-      padding: 14px 32px;
-      position: sticky;
+      padding: 14px 32px;      position: sticky;
       top: 0;
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -2187,41 +2186,6 @@ document.getElementById('test-form').addEventListener('submit', async function (
     alert('No se pudo conectar con el servidor. Verifica que el backend esté activo.');
   }
 });
-const express = require('express');
-const { Pool } = require('pg');
-const app = express();
-
-app.use(express.json());
-
-// Conexión a PostgreSQL
-const pool = new Pool({
-  host: 'localhost',
-  user: 'postgres',       // tu usuario
-  password: 'tu_clave',   // tu contraseña
-  database: 'registro',   // tu base de datos
-  port: 5432
-});
-//Se supone que esto lo deben de rellenar ustedes con los datos de su postgre 
-//En teoria esto también recibe un ID para cada estudiante insertado pero solo para la BD 
-// Ruta para insertar estudiante
-app.post('/api/estudiantes', async (req, res) => {
-  const { nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo } = req.body;
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO estudiantes (nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo]
-    );
-
-    res.json({ ok: true, id: result.rows[0].id });
-  } catch (err) {
-    console.error('Error al insertar:', err);
-    res.json({ ok: false, error: err.message });
-  }
-});
-
-app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));
 
 
 function recopilarRespuestas() {
