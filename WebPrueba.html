@@ -24,8 +24,7 @@
       align-items: center;
       background-color: #2c3e50;
       color: #fff;
-      padding: 14px 32px;
-      position: sticky;
+      padding: 14px 32px;      position: sticky;
       top: 0;
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -560,7 +559,7 @@
 
     //Reune los datos para la insercion en BD 
 
-    function startTest(e) {
+    async function startTest(e) {
       e.preventDefault();
 
       const nameInput        = document.getElementById('student-name');
@@ -574,11 +573,13 @@
       const tipoCInput       = document.querySelector('input[name="student-tipo-colegio"]:checked'); //De este tipo porque son de selección
 
       let valid = true;
+      let erroresEncontrados = [];
 
       // Nombre
       if (!nameInput.value.trim()) {
         document.getElementById('name-error').style.display = 'block';
         nameInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Nombre completo');
         valid = false;
       } else {
         document.getElementById('name-error').style.display = 'none';
@@ -589,6 +590,7 @@
       if (!cedulaInput.value.trim()) {
         document.getElementById('cedula-error').style.display = 'block';
         cedulaInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Cédula');
         valid = false;
       } else {
         document.getElementById('cedula-error').style.display = 'none';
@@ -600,6 +602,7 @@
       if (!ageInput.value.trim() || isNaN(ageVal) || ageVal < 5 || ageVal > 99) {
         document.getElementById('age-error').style.display = 'block';
         ageInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Edad válida (5-99)');
         valid = false;
       } else {
         document.getElementById('age-error').style.display = 'none';
@@ -609,6 +612,7 @@
       // Sexo
       if (!sexInput) {
         document.getElementById('sex-error').style.display = 'block';
+        erroresEncontrados.push('Sexo');
         valid = false;
       } else {
         document.getElementById('sex-error').style.display = 'none';
@@ -618,6 +622,7 @@
       if (!departamentoInput.value.trim()) {
         document.getElementById('departamento-error').style.display = 'block';
         departamentoInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Departamento');
         valid = false;
       } else {
         document.getElementById('departamento-error').style.display = 'none';
@@ -628,6 +633,7 @@
       if (!municipioInput.value.trim()) {
         document.getElementById('municipio-error').style.display = 'block';
         municipioInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Municipio');
         valid = false;
       } else {
         document.getElementById('municipio-error').style.display = 'none';
@@ -637,6 +643,7 @@
       // Casco
       if (!cascoInput) {
         document.getElementById('casco-error').style.display = 'block';
+        erroresEncontrados.push('Casco (Urbano/Rural)');
         valid = false;
       } else {
         document.getElementById('casco-error').style.display = 'none';
@@ -646,6 +653,7 @@
       if (!colegioInput.value.trim()) {
         document.getElementById('colegio-error').style.display = 'block';
         colegioInput.style.borderColor = '#e74c3c';
+        erroresEncontrados.push('Colegio');
         valid = false;
       } else {
         document.getElementById('colegio-error').style.display = 'none';
@@ -655,12 +663,11 @@
       // Tipo colegio
       if (!tipoCInput) {
         document.getElementById('tipo-colegio-error').style.display = 'block';
+        erroresEncontrados.push('Tipo de colegio (Privado/Público)');
         valid = false;
       } else {
         document.getElementById('tipo-colegio-error').style.display = 'none';
       }
-
-      if (!valid) return;
 
       // Store all student data grouped for PostgreSQL payload
       window.studentData = {
@@ -703,18 +710,38 @@
       startTimer();
     }
 
-    function startTimer() {
-      timerInterval = setInterval(function () {
-        if (!testStarted) return;
-        seconds++;
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        timerDisplay.textContent =
-          String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    // Variables globales del cronómetro
+    let timerInterval = null;
+    let secondsRemaining = 15 * 60; // 15 minutos en segundos
 
-        if (seconds >= MAX_SECONDS) {
-          clearInterval(timerInterval);
-          lockForm();
+    function startTimer() {
+      // Buscar el elemento del timer aquí, cuando se llama (no cuando se define)
+      const timerDisplay = document.getElementById('timer-display');
+      if (!timerDisplay) {
+        console.error('No se encontró el elemento #timer-display');
+        return;
+      }
+
+      // Mostrar el tiempo inicial
+      const mins = Math.floor(secondsRemaining / 60);
+      const secs = secondsRemaining % 60;
+      timerDisplay.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+      // Cancelar cualquier interval anterior
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(function () {
+        if (secondsRemaining > 0) {
+          secondsRemaining--;
+          const mins = Math.floor(secondsRemaining / 60);
+          const secs = secondsRemaining % 60;
+          timerDisplay.textContent =
+            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+          if (secondsRemaining === 0) {
+            clearInterval(timerInterval);
+            lockForm();
+          }
         }
       }, 1000);
     }
@@ -1315,31 +1342,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
       
       <!-- Pregunta 4 -->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q4-label">
         <p class="question-number">Pregunta 4</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q4-label">
         PARA CADA UNO ES BARBARIE AQUELLO QUE NO LE ES FAMILIAR (MONTAIGNE) 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q4" value="a" required />
             <span>A-El uso define la barbarie como aquello que es propio de un individuo. . </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q4" value="b" />
             <span>B- La noción de barbarie es relativa en cada civilización. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q4" value="c" />
             <span>C- La barbarie es difícil de definir.  </span>
           </label>
         </div>
       </div>
 
-          <div class="question-card" role="group" aria-labelledby="q3-label">
+          <div class="question-card" role="group" aria-labelledby="q5-label">
         <p class="question-number">Pregunta 5</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q5-label">
         6. EN UN ACTO TAN COMPLEJO COMO ES EL JUICIO ESTETICO DISTINGUIMOS CON DIFICULTAD 
         AQUELLO QUE NOSOTROS APORTAMOS DE LO QUE PROCEDE DE LAS ADQUISICIONES CULTURALES. 
         (J. CHARBONNEAUX) 
@@ -1347,15 +1374,15 @@ document.addEventListener('DOMContentLoaded', function () {
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q5" value="a" required />
             <span>A- Es difícil separar el juicio personal de la impregnación recibida cuando decimos:"Esto es bonito".  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q5" value="b" />
             <span>B- El juicio estético es complejo ya que pone en juego toda una educación. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q5" value="c" />
             <span> C- Un ser sin cultura no podrá emitir un juicio estético.  </span>
           </label>
         </div>
@@ -1363,23 +1390,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 6 -->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q6-label">
         <p class="question-number">Pregunta 6</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q6 -label">
           RIE BIEN EL QUE RIE ULTIMO  
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q6" value="a" required />
             <span>A- Es necesario esperar haber pasado la última para conocer el final de la historia.</span>
              </label>
             <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q6" value="b" />
             <span>B- pícaro, pícaro y medio.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q6" value="c" />
             <span>C- Lo importante es decir la última palabra.   </span>
           </label>
         </div>
@@ -1387,23 +1414,23 @@ document.addEventListener('DOMContentLoaded', function () {
       
 
        <!-- Pregunta 7 -->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q7-label">
         <p class="question-number">Pregunta 7</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q7-label">
          UNA GOLONDRINA NO HACE VERANO 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q7" value="a" required />
             <span>A-  Las apariencias no son la realidad. </span>
            </label>
             <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q7" value="b" />
             <span>B- De la mano a la boca se pierde la sopa.   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q7" value="c" />
             <span>C- Debe tenerse cuidado con las apariencias, son a menudo engañosas.   </span>
           </label>
         </div>
@@ -1411,9 +1438,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
       <!-- Pregunta 8 -->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q8-label">
         <p class="question-number">Pregunta 8</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q8-label">
          LA SOBREPROTECCIÓN RETRASA LA MADUREZ DEL NIÑO, CUANDO PODRIA PENSARSE QUE 
          LO BENEFICIA. (P. GASCAR) 
 
@@ -1421,16 +1448,16 @@ document.addEventListener('DOMContentLoaded', function () {
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q8" value="a" required />
             <span>A-Un niño sobreprotegido por sus padres se beneficia de una madurez psicológica más lenta, 
                  por lo que tiene un yo más sólido. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q8" value="b" />
             <span>B- -Es necesario proteger incluso con exceso, al niño que madura lentamente.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q8" value="c" />
             <span>C- Si los padres se preocupasen menos de proteger al niño, éste llegarla más rápidamente a ser autónomo. 
   </span>
           </label>
@@ -1438,22 +1465,22 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
 
        <!-- Pregunta 9 -->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q9-label">
         <p class="question-number">Pregunta 9</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q9-label">
          QUIEN HA APRENDIDO A MORIR, HA DESAPRENDIDO A SERVIR.  (MONTAIGNE) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q9" value="a" required />
             <span>A-No puede hacerse esclavo a aquel que no tiene medio a la muerte.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q9" value="b" />
             <span>B- Es necesario saber servir para saber morir.   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q9" value="c" />
             <span>C-Si no se sirve a nadie no se aprecia la vida. 
   </span>
           </label>
@@ -1461,66 +1488,66 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
 
        <!-- Pregunta 10-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q10-label">
         <p class="question-number">Pregunta 10</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q10-label">
          LOS PERROS LADRAN, LA CARAVANA SIGUE. 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q10" value="a" required />
             <span>A- Para un corazón valiente, nada hay imposible.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q10" value="b" />
             <span>B- Haz bien y deja que digan.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q10" value="c" />
             <span>C-El hombre que sigue su quimera, no oye las advertencias que le da el cielo </span>
           </label>
         </div>
       </div>
 
        <!-- Pregunta 11-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q11-label">
         <p class="question-number">Pregunta 11</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q11-label">
         LOS ÁRBOLES NO DEJAN VER EL BOSQUE. 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q11" value="a" required />
             <span>A- Siempre se ve la paja en el ojo ajeno y no se ve la viga en el propio. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q11" value="b" />
             <span>B- Quien mira demasiado por donde va, no ve a donde debe ir.   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q11" value="c" />
             <span>C-Aquellos que se aplican a las pequeñas cosas generalmente se vuelven incapaces de las grandes. </span>
           </label>
         </div>
       </div>
 
        <!-- Pregunta 12-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q12-label">
         <p class="question-number">Pregunta 12</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q12-label">
            ES PRECISO QUE UNA PUERTA BONITA SEA PRIMERO UNA PUERTA. (ALAIN)
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q12" value="a" required />
             <span>A- El objeto útil deja de ser bello.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q12" value="b" />
             <span>B- Es bastante más bonito porque es inútil.    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q12" value="c" />
             <span>C- Lo funcional es una condición necesaria para lo bello   </span>
           </label>
         </div>
@@ -1528,48 +1555,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 13-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q13-label">
         <p class="question-number">Pregunta 13</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q13-label">
            PUEDO NEGAR UNA COSA SIN VERME OBLIGADO A DESHONRARLA Y SIN NEGAR A LOS 
            DEMAS EL DERECHO DE CREER EN ELLA. (A. CAMUS) 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q13" value="a" required />
             <span>A- Incluso si soy escéptico debo respetar las ideas de los otros. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q13" value="b" />
             <span>B- Cualquiera que sea mi opinión, mi compromiso no llega hasta la intolerancia.    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q13" value="c" />
             <span>C- Incluso si creo en una cosa no puedo imponerla a otros.     </span>
           </label>
         </div>
       </div>
 
       <!-- Pregunta 14-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q14-label">
         <p class="question-number">Pregunta 14</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q14-label">
         	MALDITO SEA AQUEL POR EL CUAL LLEGA EL ESCANDALO.  
 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q14" value="a" required />
             <span>A- No hay humo sin fuego.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q14" value="b" />
             <span>B- Ten cuidado que al manchar a los otros no te salpiques tu mismo. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q14" value="c" />
             <span> C- Quien siembra vientos recoge tempestades.  span>
           </label>
         </div>
@@ -1577,47 +1604,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 15-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q15-label">
         <p class="question-number">Pregunta 15</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q15-label">
         CUANTO MAS ALTO SUBE EL MONO, MAS SE LE VE EL TRASERO.  
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q15" value="a" required />
             <span>A- El hombre que se hace ver demasiado no tiene vida intima.   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q15" value="b" />
             <span>B- La nobleza obliga   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q15" value="c" />
             <span> C- Una ascensión no está jamás exenta de peligro.</span>
           </label>
         </div>
       </div>
 
       <!-- Pregunta 16-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q16-label">
         <p class="question-number">Pregunta 16</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q16-label">
         17.	LA PERSONA PRUDENTE RIEGA LENTAMENTE, LA INSENSATA LO INUNDA TODO DE GOLPE.  (FLORIAN)  
 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q16" value="a" required />
             <span>A- Quien quiere llegar lejos arregla su cabalgadura.    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q16" value="b" />
             <span>B- Poco a poco hilaba la vieja el copo.   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q16" value="c" />
             <span> C- El tiempo no importa para el negocio.  </span>
           </label>
         </div>
@@ -1625,24 +1652,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 17-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q17-label">
         <p class="question-number">Pregunta 17</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q17-label">
       	CADA DESEO ME HA ENRIQUECIDO MÁS QUE LA POSESION SIEMPRE FALSA DEL OBJETO DE  
       MI DESEO. (A. GIDE)  
  
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q17" value="a" required />
             <span>A- Una cosa tiene tanto más valor cuanto más tiempo ha sido deseada.    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q17" value="b" />
             <span>B- La verdadera riqueza reside en el deseo y no en la posesión.    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q17" value="c" />
             <span> C- La posesión es un espejismo decepcionante.    </span>
           </label>
         </div>
@@ -1652,23 +1679,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 18-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q18  -label">
         <p class="question-number">Pregunta 18</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q18-label">
         QUE IMPORTA LA BOTELLA SIEMPRE QUE SE TENGA LA BORRACHERA. 
   
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q18" value="a" required />
             <span>A- El fin justifica los medios </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q18" value="b" />
             <span>B- Es a menudo en las pequeñas ostras, donde se encuentran las más bellas perlas</span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q18" value="c" />
             <span> C- Los decorados están hechos de cartón, los accesorios en papel pero la magia del teatro suscita la ilusión. </span>
           </label>
         </div>
@@ -1676,22 +1703,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
       <!-- Pregunta 19-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q19-label">
         <p class="question-number">Pregunta 19</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q19-label">
          A BURRA VIEJA, ALBARDA NUEVA. 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q19" value="a" required />
             <span>A- El hábito no hace al monje. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q19" value="b" />
             <span>B- La riqueza ilumina la mediocridad.</span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q19" value="c" />
             <span> C- Es en las viejas ollas donde se hace la mejor sopa.  </span>
           </label>
         </div>
@@ -1699,23 +1726,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
            <!-- Pregunta 20-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q20-label">
         <p class="question-number">Pregunta 20</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q20-label">
          TERMINADA LA FIESTA, ADIOS AL SANTO.  
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q20" value="a" required />
             <span>A- En la mayor parte del mundo, la prosperidad no tiene compañía más segura que la 
                 ignorancia y el olvido de los servicios prestados. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q20" value="b" />
             <span>B- El tiempo pasa y trae consigo recuerdos agradables.</span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q20" value="c" />
             <span> C- -Lo que el viento se llevó.   </span>
           </label>
         </div>
@@ -1723,45 +1750,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
       
             <!-- Pregunta 21-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q21-label">
         <p class="question-number">Pregunta 21</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q21-label">
          UNICAMENTE LA RISA ESCAPA AL CONTROL. (N. CLIFFORD BARNEY) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q21" value="a" required />
             <span>A- La risa es el sonido del espíritu; ciertas risas parecen tontas como una pieza suena a falsa. (Ed. y J. Goncourt) 
             </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q21" value="b" />
             <span>B-El hombre no ríe más que cunado sabe que una cosa es cómica. (A. Porchia) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q21" value="c" />
             <span> C- La risa se resiste cuando se la llama y explota cuando se la teme.    </span>
           </label>
         </div>
       </div>
 
             <!-- Pregunta 22-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q22-label">
         <p class="question-number">Pregunta 22</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q22-label">
         MUCHAS PERSONAS PODRIAN VER SI SE QUITARAN SUS GAFAS. (F. HERBEL) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q22" value="a" required />
             <span>A- Ver me cuesta abrir los ojos a todo lo que no quisiera ver. (A. Porchia)  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q22" value="b" />
             <span>B-Disimula su rostro con una máscara, oculta su mirada con gafas. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q22" value="c" />
             <span> C- Hay espíritus parecidos a espejos convexos o cóncavos que representan los objetos tar como los reciben, 
               pero que no los reciben jamás tal como son. (J. Joubert)     </span>
           </label>
@@ -1769,47 +1796,47 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
 
        <!-- Pregunta 23-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q23-label">
         <p class="question-number">Pregunta 23</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q23-label">
         ES MAS DIFICIL QUE PERDURE LA BUENA FORTUNA QUE LA MALA SI LAS HADAS HAN 
         ADORNADO TU CUNA DESCONFIA. (ALAIN) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q23" value="a" required />
             <span>A- Para vivir felices, vivamos ocultos. (Florian)   </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q23" value="b" />
             <span>B-Seguir su estrella, no es elegir su vida.  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q23" value="c" />
             <span> C- El destino que designa, asigna.    </span>
           </label>
         </div>
       </div>
 
           <!-- Pregunta 24-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q24-label">
         <p class="question-number">Pregunta 24</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q24-label">
         NO HAY GRANDES HOMBRES SIN UN GRAMO DE LOCURA. (DIDEROT) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q24" value="a" required />
             <span>A- No se ha llegado todavía a un acuerdo sobre si el genio es la perfección de lo que va a 
                     morir, o la singularidad de lo que va a nacer. (P.J. Toulet) 
    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q24" value="b" />
             <span>B-El genio, en definitiva, no es más que la forma de percibir de un modo poco usual (W. Jones)  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q24" value="c" />
             <span> C- Los grandes hombres no son siempre aquellos que tienen más ingenio.     </span>
           </label>
         </div>
@@ -1817,25 +1844,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
          <!-- Pregunta 25-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q25-label">
         <p class="question-number">Pregunta 25</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q25-label">
         HABLO CON LA IDEA DE CALLARME... Y HABLO. (A. PORCHIA)
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q25" value="a" required />
             <span>A-Las palabras son los pensamientos lo que, el oro es al diamante; son necesarias para 
                     ponerlos de manifiesto pero en poca cantidad. (Voltaire) 
    </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q25" value="b" />
             <span>B-En muchos hombres la palabra precede al pensamiento. Saben solamente lo que piensan 
              después de haber oído lo que dicen. (G. Le-Bon). </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q25" value="c" />
             <span> C- Sólo cuando uno piensa que no es escuchado y continúa hablando, es cuando empieza a 
                       decir cosas que merecen ser escuchadas. (R. de Montesquieu). </span>
           </label>
@@ -1844,94 +1871,94 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
       <!-- Pregunta 26-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q26-label">
         <p class="question-number">Pregunta 26</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q26-label">
         LA VERDAD ES COMO DIOS, NO SE MUESTRA CON EL ROSTRO DESCUBIERTO (GOETHE)
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q26" value="a" required />
             <span>A-La verdad no es una bella mujer escondida en el fondo de un pozo, 
               sino un tímido pájaro que sólo la astucia puede apresar. (J. Conrad) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q26" value="b" />
             <span>B-Una verdad muy clara pronto deja de ser una verdad fecunda. (G. Lebon)</span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q26" value="c" />
             <span> C- A menos que se ame la verdad no se sabrá conocerla. (B. Pascal) </span>
           </label>
         </div>
       </div>
 
       <!-- Pregunta 27-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q27-label">
         <p class="question-number">Pregunta 27</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q27-label">
        EL ABURRIMIENTO ES QUIZAS UN PRIVILEGIO. LOS IMBECILES NO SIENTEN ABURRIRSE, 
        QUIZAS NO SE ABURREN. (Ed. y J. de GONCOURT) 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q27" value="a" required />
             <span>A-No es uno de los menores méritos de la gente de mucho el saber aburrirse sin que lo parezca. </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q27" value="b" />
             <span>B- En el teatro, el recreo de la vista y el oído dificulta mucho la reflexión. (Goethe) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q27" value="c" />
             <span> C-  Rosine: "El aburrimiento me mata". Fígaro: "Lo creo, no engorda más que a los tontos". (Beaumarchais)</span>
           </label>
         </div>
       </div>
 
        <!-- Pregunta 28-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q28-label">
         <p class="question-number">Pregunta 28</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q28-label">
       CUANDO NO SE TIENE PELO, SE ENCUENTRAN RIDICULAS LAS CABELLERAS. 
       (LEAUTAUD) 
 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q28" value="a" required />
             <span>A-Los viejos creen lamentarse de su tiempo, se equivocan, no se lamentan más que de su edad. (V. Hugo)  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q28" value="b" />
             <span>B- Tanto sabe la juventud como puede la vejez. (Proverbio) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q28" value="c" />
             <span> C-  A los viejos les gusta dar buenos consejos para consolarse de no tener edad para dar malos ejemplos. (La Rochefoucault). </span>
           </label>
         </div>
       </div>
 
        <!-- Pregunta 29-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q29-label">
         <p class="question-number">Pregunta 29</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q29-label">
         LO QUE PROBABLEMENTE FALSEA TODA LA VIDA, ES EL ESTAR CONVENCIDO DE QUE SE 
         DICE LA VERDAD PORQUE SE DICE LO QUE SE PIENSA. (S. GUITRY).
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q29" value="a" required />
             <span>A-A cada uno su verdad. (Pirandello)  </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q29" value="b" />
             <span>B- El principal uso que hacemos de nuestro amor a la verdad, es el de persuadirnos de que aquello que amamos es verdadero. (P. Nicole) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q29" value="c" />
             <span> C- El deseo de hablar de nosotros y de mostrar nuestros defectos del lado que queremos, constituye una gran parte de nuestra sinceridad (La Rochefoucault). </span>
           </label>
         </div>
@@ -1940,23 +1967,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
        <!-- Pregunta 30-->
-      <div class="question-card" role="group" aria-labelledby="q3-label">
+      <div class="question-card" role="group" aria-labelledby="q30-label">
         <p class="question-number">Pregunta 30</p>
-        <p class="question-text" id="q3-label">
+        <p class="question-text" id="q30-label">
         DESDE HACE TREINTA Y CINCO AÑOS REVIENTO DE ORGULLO, ES MI MANERA DE MORIR DE 
         VERGUENZA. (JEAN PAUL SARTRE) 
         </p>
         <div class="options">
           <label class="option-label">
-            <input type="radio" name="q3" value="a" required />
+            <input type="radio" name="q30" value="a" required />
             <span>A-Es necesario matar el orgullo sin herirlo, ya que si se le hiere no muere. (Rivarol). </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="b" />
+            <input type="radio" name="q30" value="b" />
             <span>B- El orgullo que a menudo nos inspira tanta envidia también nos sirve a menudo para moderarla. (La Reocherfoucault) </span>
           </label>
           <label class="option-label">
-            <input type="radio" name="q3" value="c" />
+            <input type="radio" name="q30" value="c" />
             <span> C- El amor propio encuentra su goce en el sugrafio y aprobación de los hombres, el último grado del orgullo es gozar de su desprecio. (S. de Meihan)  </span>
           </label>
         </div>
@@ -2090,25 +2117,19 @@ const MAX_SECONDS = 25 * 60;
     }
 
     let seconds = 0;
-    const timerDisplay = document.getElementById('timer-display');
+    const timerDisplay_old = document.getElementById('timer-display');
 
     function updateTimer() {
       seconds++;
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
-      timerDisplay.textContent =
+      timerDisplay_old.textContent =
         String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
     }
 
-    const timerInterval = setInterval(updateTimer, 1000);
+    // Timer no debe iniciarse aquí, solo cuando el estudiante hace click en "Iniciar Test"
+    // const timerInterval = setInterval(updateTimer, 1000);
 
-    // Form submit
-    document.getElementById('test-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      clearInterval(timerInterval);
-      const elapsed = timerDisplay.textContent;
-      alert('Respuestas enviadas. Tiempo total: ' + elapsed);
-    });
 // ─── Per-option EventListeners ───────────────────────────────────────────────
 const respuestasUser = {};
 
@@ -2123,8 +2144,15 @@ document.querySelectorAll('input[type="radio"]').forEach(input => {
 function buildPayload() {
   return {
     estudiante: {
-      nombre: window.studentData?.name  ?? '',
-      correo: window.studentData?.email ?? ''
+      nombre: window.studentData?.nombre  ?? '',
+      cedula: window.studentData?.cedula ?? '',
+      edad: window.studentData?.edad ?? '',
+      sexo: window.studentData?.sexo ?? '',
+      departamento: window.studentData?.departamento ?? '',
+      municipio: window.studentData?.municipio ?? '',
+      zona: window.studentData?.zona ?? '',
+      colegio: window.studentData?.colegio ?? '',
+      tipo_colegio: window.studentData?.tipo_colegio ?? ''
     },
     respuestas: { ...respuestasUser },
     tiempo_total: document.getElementById('timer-display').textContent
@@ -2158,41 +2186,6 @@ document.getElementById('test-form').addEventListener('submit', async function (
     alert('No se pudo conectar con el servidor. Verifica que el backend esté activo.');
   }
 });
-const express = require('express');
-const { Pool } = require('pg');
-const app = express();
-
-app.use(express.json());
-
-// Conexión a PostgreSQL
-const pool = new Pool({
-  host: 'localhost',
-  user: 'postgres',       // tu usuario
-  password: 'tu_clave',   // tu contraseña
-  database: 'registro',   // tu base de datos
-  port: 5432
-});
-//Se supone que esto lo deben de rellenar ustedes con los datos de su postgre 
-//En teoria esto también recibe un ID para cada estudiante insertado pero solo para la BD 
-// Ruta para insertar estudiante
-app.post('/api/estudiantes', async (req, res) => {
-  const { nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo } = req.body;
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO estudiantes (nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [nombre, apellido, edad, genero, casco_urbano, tipo_colegio, correo]
-    );
-
-    res.json({ ok: true, id: result.rows[0].id });
-  } catch (err) {
-    console.error('Error al insertar:', err);
-    res.json({ ok: false, error: err.message });
-  }
-});
-
-app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));
 
 
 function recopilarRespuestas() {
