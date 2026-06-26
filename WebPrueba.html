@@ -253,7 +253,7 @@
       </div>
       <h2 style="font-size:1.4rem;color:#2c3e50;margin-bottom:8px;">Bienvenido/a</h2>
       <p style="font-size:0.95rem;color:#666;margin-bottom:32px;line-height:1.6;">
-        Selecciona tu perfil para continuar con el Test de Comprensión Verbal.
+        Presiona el botón de estudiante para rellenar tus datos
       </p>
       <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
         <button onclick="showStudentStep()" style="
@@ -280,30 +280,7 @@
           </svg>
           Estudiante
         </button>
-        <button onclick="goToPsychologist()" style="
-          flex: 1;
-          min-width: 140px;
-          background: #27ae60;
-          color: #fff;
-          border: none;
-          padding: 16px 24px;
-          border-radius: 10px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.2s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        "
-        onmouseover="this.style.background='#1e8449'"
-        onmouseout="this.style.background='#27ae60'">
-          <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#fff;" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
-          </svg>
-          Psicólogo
-        </button>
+
       </div>
     </div>
 
@@ -539,7 +516,7 @@
       </form>
     </div>
   </div>
-
+ 
   <script>
     let testStarted = false;
 
@@ -710,6 +687,8 @@
       startTimer();
     }
 
+    
+
     // Variables globales del cronómetro
     let timerInterval = null;
     let secondsRemaining = 15 * 60; // 15 minutos en segundos
@@ -818,31 +797,8 @@
           />
           <span id="name-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa tu nombre completo.</span>
         </div>
-        <div style="margin-bottom:28px;">
-          <label for="student-email" style="display:block;font-size:0.9rem;font-weight:600;color:#2c3e50;margin-bottom:6px;">
-            Correo electrónico <span style="color:#e74c3c;">*</span>
-          </label>
-          <input
-            type="email"
-            id="student-email"
-            placeholder="Ej: ana@correo.com"
-            required
-            autocomplete="email"
-            style="
-              width: 100%;
-              padding: 11px 14px;
-              border: 2px solid #e0e0e0;
-              border-radius: 8px;
-              font-size: 0.95rem;
-              outline: none;
-              transition: border-color 0.2s;
-              box-sizing: border-box;
-            "
-            onfocus="this.style.borderColor='#2980b9'"
-            onblur="this.style.borderColor='#e0e0e0'"
-          />
-          <span id="email-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa un correo electrónico válido.</span>
-        </div>
+        
+          
         <button type="submit" style="
           width: 100%;
           background: #2980b9;
@@ -959,15 +915,12 @@
 
     <div class="section-header">
       <h2>Recuerde que..</h2>
-      <p>Marque la respuesta correcta al lado derecho del número 1 de columna "COMPRENSIÓN VERBAL" de su Hoja de Respuesta. 
+      <p>Marque la opción que usted considera como sorrecta para cada enunciado, puede cambiarlo en cualquier momento si cambia de opinión. 
          Dispondrá de 15 minutos para hacer esta prueba. 
-         Procure hacer el máximo de ejercicios trabajando lo más rápidamente que pueda, sin perder tiempo. Si no encuentra la solución a un ejercicio pase al siguiente: usted puede intentar resolverlo al final si dispone de tiempo. 
-
-
-    
+         Procure hacer el máximo de ejercicios trabajando lo más rápidamente que pueda, sin perder tiempo. Si no encuentra la solución a un ejercicio pase al siguiente: 
+         usted puede intentar resolverlo al final si dispone de tiempo. 
     </p>
     </div>
-
 <style>
   /* Page sections */
   .test-page {
@@ -1989,11 +1942,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
 
-
-
-
-
-
       <div class="submit-wrapper">
         <button type="submit" class="btn-submit">Enviar respuestas</button>
       </div>
@@ -2002,17 +1950,11 @@ document.addEventListener('DOMContentLoaded', function () {
   </main>
 
   <script>
-    // Timer
-
-    //Con esto si llega a 25 ya no admité más respuestas 
-    //Preguntar cuantos minutos son para la CV y modificar el cronometro 
-
 function lockForm() {
   const form = document.getElementById('test-form');
   const inputs = form.querySelectorAll('input[type="radio"]');
   const submitBtn = form.querySelector('.btn-submit');
 
-  // Capture already-answered questions before locking
   const capturedAnswers = {};
   const radioGroups = {};
 
@@ -2023,20 +1965,17 @@ function lockForm() {
     if (input.checked) {
       radioGroups[input.name] = input.value;
     }
+    input.disabled = true;
   });
 
-  // Mark unanswered questions as null
   Object.keys(radioGroups).forEach(name => {
     capturedAnswers[name] = radioGroups[name] !== null ? radioGroups[name] : null;
   });
 
-  // Merge into global respuestasUser, preserving answered, nullifying unanswered
-  Object.assign(respuestasUser, capturedAnswers);
-
-  // Build and persist the final payload before redirecting
+  const evaluacion = evaluarRespuestas(capturedAnswers);
   const finalPayload = {
     estudiante: {
-      nombre:    window.studentData?.nombre ?? window.studentData?.name  ?? '',
+      nombre:    window.studentData?.nombre ?? '',
       cedula:    window.studentData?.cedula  ?? '',
       edad:      window.studentData?.edad    ?? '',
       sexo:      window.studentData?.sexo    ?? '',
@@ -2044,10 +1983,13 @@ function lockForm() {
       municipio: window.studentData?.municipio ?? '',
       zona:      window.studentData?.zona    ?? '',
       colegio:   window.studentData?.colegio ?? '',
-      tipo_colegio: window.studentData?.tipo_colegio ?? '',
-      correo:    window.studentData?.email   ?? ''
+      tipo_colegio: window.studentData?.tipo_colegio ?? ''
     },
+    estudiante_cedula: window.studentData?.cedula ?? '',
     respuestas:   { ...capturedAnswers },
+    aciertos:     evaluacion.aciertos,
+    totalPreguntas: evaluacion.totalPreguntas,
+    porcentaje: evaluacion.porcentaje,
     tiempo_total: document.getElementById('timer-display').textContent,
     completado:   false   // flag: time ran out before manual submit
   };
@@ -2070,13 +2012,12 @@ function lockForm() {
 
     // Clear runtime state so a fresh test can be started
     testStarted = false;
-    seconds = 0;
-    timerDisplay.textContent = '00:00';
+    secondsRemaining = 15 * 60;
+    document.getElementById('timer-display').textContent = '15:00';
     Object.keys(respuestasUser).forEach(k => delete respuestasUser[k]);
     document.getElementById('test-form').reset();
   };
 
-  // Attempt async POST; navigate regardless of outcome
   fetch('http://localhost:3000/api/resultados', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2084,51 +2025,38 @@ function lockForm() {
   })
     .then(r => r.json())
     .then(data => {
-      if (data.ok) {
-        console.log('Respuestas parciales guardadas (ID:', data.id, ')');
-      } else {
-        console.warn('El servidor no pudo guardar las respuestas parciales:', data.error);
-      }
+      if (data.ok) console.log('Resultado parcial guardado (ID:', data.id, ')');
+      else console.warn('Error al guardar resultado parcial:', data.error);
     })
-    .catch(err => console.warn('No se pudo contactar el servidor al expirar el tiempo:', err))
+    .catch(err => console.warn('No se pudo contactar el servidor:', err))
     .finally(doRedirect);
 }
 
-const MAX_SECONDS = 25 * 60;
+// ─── Respuestas correctas ─────────────────────────────────────────────────────
+const respuestasCorrectas = {
+  q1:  'c', q2:  'c', q3:  'a', q4:  'b', q5:  'a',
+  q6:  'b', q7:  'c', q8:  'c', q9:  'a', q10: 'b',
+  q11: 'b', q12: 'c', q13: 'b', q14: 'c', q15: 'a',
+  q16: 'a', q17: 'b', q18: 'c', q19: 'b', q20: 'a',
+  q21: 'b', q22: 'a', q23: 'c', q24: 'b', q25: 'b',
+  q26: 'c', q27: 'c', q28: 'a', q29: 'b', q30: 'c'
+};
 
-    function lockForm() {
-      const form = document.getElementById('test-form');
-      const inputs = form.querySelectorAll('input[type="radio"]');
-      const submitBtn = form.querySelector('.btn-submit');
-
-      inputs.forEach(input => {
-        input.disabled = true;
-      });
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Tiempo agotado';
-      submitBtn.style.backgroundColor = '#95a5a6';
-      submitBtn.style.cursor = 'not-allowed';
-
-      const notice = document.createElement('p');
-      notice.textContent = 'El tiempo límite de 25 minutos ha sido alcanzado. No se admiten más respuestas.';
-      notice.style.cssText = 'color:#e74c3c;font-weight:600;text-align:center;margin-bottom:16px;';
-      submitBtn.parentNode.insertBefore(notice, submitBtn);
+// ─── Evaluar respuestas ───────────────────────────────────────────────────────
+function evaluarRespuestas(respuestasDelUsuario) {
+  let aciertos = 0;
+  const total = Object.keys(respuestasCorrectas).length;
+  Object.keys(respuestasCorrectas).forEach(pregunta => {
+    if (respuestasDelUsuario[pregunta] === respuestasCorrectas[pregunta]) {
+      aciertos++;
     }
-
-    let seconds = 0;
-    const timerDisplay_old = document.getElementById('timer-display');
-
-    function updateTimer() {
-      seconds++;
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      timerDisplay_old.textContent =
-        String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-    }
-
-    // Timer no debe iniciarse aquí, solo cuando el estudiante hace click en "Iniciar Test"
-    // const timerInterval = setInterval(updateTimer, 1000);
+  });
+  return {
+    aciertos:       aciertos,
+    totalPreguntas: total,
+    porcentaje:     Math.round((aciertos / total) * 100)
+  };
+}
 
 // ─── Per-option EventListeners ───────────────────────────────────────────────
 const respuestasUser = {};
@@ -2136,84 +2064,55 @@ const respuestasUser = {};
 document.querySelectorAll('input[type="radio"]').forEach(input => {
   input.addEventListener('change', function () {
     respuestasUser[this.name] = this.value;
-    console.log('Respuestas actuales:', respuestasUser);
   });
 });
 
-// ─── Payload builder (answers + student data) ────────────────────────────────
-function buildPayload() {
-  return {
-    estudiante: {
-      nombre: window.studentData?.nombre  ?? '',
-      cedula: window.studentData?.cedula ?? '',
-      edad: window.studentData?.edad ?? '',
-      sexo: window.studentData?.sexo ?? '',
-      departamento: window.studentData?.departamento ?? '',
-      municipio: window.studentData?.municipio ?? '',
-      zona: window.studentData?.zona ?? '',
-      colegio: window.studentData?.colegio ?? '',
-      tipo_colegio: window.studentData?.tipo_colegio ?? ''
-    },
-    respuestas: { ...respuestasUser },
-    tiempo_total: document.getElementById('timer-display').textContent
-  };
-}
-
-// ─── Submit: send payload to the Express API ─────────────────────────────────
+// ─── Submit ───────────────────────────────────────────────────────────────────
 document.getElementById('test-form').addEventListener('submit', async function (e) {
   e.preventDefault();
   clearInterval(timerInterval);
 
-  const payload = buildPayload();
-  console.log('Payload a enviar:', payload);
+  const evaluacion = evaluarRespuestas(respuestasUser);
+  const payload = {
+    estudiante: {
+      nombre:       window.studentData?.nombre        ?? '',
+      cedula:       window.studentData?.cedula        ?? '',
+      edad:         window.studentData?.edad          ?? '',
+      sexo:         window.studentData?.sexo          ?? '',
+      departamento: window.studentData?.departamento  ?? '',
+      municipio:    window.studentData?.municipio     ?? '',
+      zona:         window.studentData?.zona          ?? '',
+      colegio:      window.studentData?.colegio       ?? '',
+      tipo_colegio: window.studentData?.tipo_colegio  ?? ''
+    },
+    estudiante_cedula: window.studentData?.cedula ?? '',
+    respuestas:        { ...respuestasUser },
+    aciertos:          evaluacion.aciertos,
+    totalPreguntas:    evaluacion.totalPreguntas,
+    porcentaje:        evaluacion.porcentaje,
+    tiempo_total:      document.getElementById('timer-display').textContent,
+    completado:        true
+  };
 
   try {
     const response = await fetch('http://localhost:3000/api/resultados', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(payload)
     });
-
     const data = await response.json();
-
     if (data.ok) {
-      alert(`Respuestas guardadas correctamente (ID: ${data.id}). Tiempo total: ${payload.tiempo_total}`);
+      alert(`✅ Respuestas guardadas. Aciertos: ${evaluacion.aciertos}/${evaluacion.totalPreguntas} (${evaluacion.porcentaje}%). Tiempo: ${payload.tiempo_total}`);
     } else {
-      alert('Error al guardar las respuestas: ' + data.error);
+      alert('Error al guardar: ' + data.error);
     }
   } catch (err) {
     console.error('Error de red:', err);
-    alert('No se pudo conectar con el servidor. Verifica que el backend esté activo.');
+    alert('No se pudo conectar con el servidor.');
   }
 });
-
-
-function recopilarRespuestas() {
-      const form = document.getElementById('test-form');
-      const respuestasUsuario = {}; 
-
-      const radioGroups = {};
-      form.querySelectorAll('input[type="radio"]').forEach(input => {
-        if (!radioGroups[input.name]) {
-          radioGroups[input.name] = null;
-        }
-        if (input.checked) {
-          radioGroups[input.name] = input.value;
-        }
-      });
-
-      Object.assign(respuestasUsuario, radioGroups);
-      return respuestasUsuario;
-    }
-
-    let respuestasUsuario = {};
-
-    document.getElementById('test-form').addEventListener('change', function () {
-      respuestasUsuario = recopilarRespuestas();
-      console.log('Respuestas actuales:', respuestasUsuario);
-    });
-
   </script>
 
 </body>
 </html>
+

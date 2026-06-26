@@ -24,7 +24,7 @@ async function initDB() {
       CREATE TABLE IF NOT EXISTS estudiantes (
         id            SERIAL PRIMARY KEY,
         nombre        VARCHAR(200) NOT NULL,
-        cedula        VARCHAR(50),
+        cedula        VARCHAR(50) UNIQUE NOT NULL,
         edad          INTEGER,
         sexo          VARCHAR(20),
         departamento  VARCHAR(100),
@@ -39,7 +39,7 @@ async function initDB() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS resultados (
         id              SERIAL PRIMARY KEY,
-        estudiante_id   INTEGER REFERENCES estudiantes(id),
+        estudiante_cedula VARCHAR(50) REFERENCES estudiantes(cedula),
         respuestas      JSONB,
         aciertos        INTEGER,
         total_preguntas INTEGER,
@@ -88,41 +88,27 @@ app.post('/api/estudiantes', async (req, res) => {
 // ─── POST /api/resultados ─────────────────────────────────────────────────────
 // Guarda los resultados del test en PostgreSQL
 app.post('/api/resultados', async (req, res) => {
-  const {
-    estudiante_id,
-    respuestas,
-    aciertos,
-    totalPreguntas,
-    porcentaje,
-    tiempo_total,
-    completado,
-    metadata
-  } = req.body;
-
-  // También acepta la estructura antigua { estudiante: {...}, respuestas, tiempo_total }
   const payload = req.body;
-  const estId = estudiante_id
-    ?? (payload.estudiante && payload.resultados && payload.resultados.estudiante_id)
-    ?? null;
+  const cedula = payload.estudiante?.cedula ?? null;
 
   try {
     const result = await pool.query(
       `INSERT INTO resultados
-         (estudiante_id, respuestas, aciertos, total_preguntas, porcentaje, tiempo_total, completado, metadata)
+         (estudiante_cedula, respuestas, aciertos, total_preguntas, porcentaje, tiempo_total, completado, metadata)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
        RETURNING id`,
       [
-        estId,
-        JSON.stringify(respuestas ?? payload.respuestas ?? {}),
-        aciertos   ?? (payload.resultados?.aciertos)          ?? null,
-        totalPreguntas ?? (payload.resultados?.totalPreguntas) ?? null,
-        porcentaje ?? (payload.resultados?.porcentaje)        ?? null,
-        tiempo_total ?? payload.tiempo_total ?? null,
-        completado  ?? true,
-        JSON.stringify(metadata ?? {})
+        cedula,
+        JSON.stringify(payload.respuestas ?? {}),
+        payload.resultados?.aciertos       ?? payload.aciertos       ?? null,
+        payload.resultados?.totalPreguntas ?? payload.totalPreguntas ?? null,
+        payload.resultados?.porcentaje     ?? payload.porcentaje     ?? null,
+        payload.tiempo_total               ?? null,
+        payload.completado                 ?? true,
+        JSON.stringify(payload.metadata    ?? {})
       ]
     );
-    console.log('✅ Resultado guardado, id:', result.rows[0].id);
+    console.log('✅ Resultado guardado, id:', result.rows[0].id, '| cedula:', cedula);
     res.json({ ok: true, id: result.rows[0].id });
   } catch (err) {
     console.error('Error al guardar resultados:', err.message);

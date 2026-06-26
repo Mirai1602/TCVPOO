@@ -7,47 +7,48 @@ import lombok.Setter;
 
 /**
  * Entidad que representa al estudiante evaluado.
- * Cumple con el principio de Responsabilidad Única (SRP).
+ * Actualizada para coincidir exactamente con PostgreSQL.
  */
 @Entity
-@Table(name = "estudiantes") //  Así se debe llamar la tabla que cree pg
+@Table(name = "estudiantes")
 @Getter @Setter
-@View(members = "Datos Personales [ cedula, nombre, apellido, edad, sexo ]; Ubicacion [ departamento, municipio ]; Academico [ colegio, tipoColegio ]")
+@Views({
+    @View(members = "Datos Personales [ cedula, nombre, edad, sexo ]; Ubicacion [ departamento, municipio, zona ]; Academico [ colegio, tipoColegio ]"),
+    @View(name = "Simple", members = "cedula, nombre")
+})
 public class Estudiante {
 
 	@Id
-	@Hidden // Ocultamos el ID interno al psicólogo
+	@Hidden
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_estudiante")
-	private Integer idEstudiante;
+	@Column(name = "id")
+	private Integer id;
 
-	@Column(name = "cedula", length = 16, nullable = false)
-	@Required
+	@Column(name = "cedula", length = 50, unique = true)
 	private String cedula;
 
-	@Column(name = "nombre", length = 50, nullable = false)
+	@Column(name = "nombre", length = 200, nullable = false)
 	@Required
 	private String nombre;
-
-	@Column(name = "apellido", length = 50, nullable = false)
-	@Required
-	private String apellido;
 
 	@Column(name = "edad")
 	private Integer edad;
 
-	@Column(name = "sexo", length = 1)
-	private String sexo; // Puede ser 'M' o 'F'
+	@Column(name = "sexo", length = 20)
+	private String sexo; 
 
-	@Column(name = "departamento", length = 50)
+	@Column(name = "departamento", length = 100)
 	private String departamento;
 
-	@Column(name = "municipio", length = 50)
+	@Column(name = "municipio", length = 100)
 	private String municipio;
 
-	@Column(name = "colegio", length = 100)
+	@Column(name = "zona", length = 20)
+	private String zona;
+
+	@Column(name = "colegio", length = 200)
 	private String colegio;
 
-	@Column(name = "tipo_colegio", length = 30) // Ej: "Público" o "Privado"
+	@Column(name = "tipo_colegio", length = 20)
 	private String tipoColegio;
 }

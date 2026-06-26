@@ -33,13 +33,8 @@
 	-->      
 	
 	<!-- PostgreSQL -->
-	<Resource name="jdbc/TCVPOODB" auth="Container" type="javax.sql.DataSource"
-			  maxTotal="20" maxIdle="10" maxWaitMillis="-1"
 			  username="postgres"
-			  password="password2"
 			  driverClassName="org.postgresql.Driver"
-			  url="jdbc:postgresql://localhost:5432/tcv_db"/>
-	-->
 	
 	<!-- Oracle 
 	<Resource name="jdbc/TestComprensionVerbalOpenxavaDS" auth="Container" type="javax.sql.DataSource"

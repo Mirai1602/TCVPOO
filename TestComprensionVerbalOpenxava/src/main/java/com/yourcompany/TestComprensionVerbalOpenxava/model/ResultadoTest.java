@@ -10,36 +10,41 @@ import java.time.LocalDateTime;
  * Entidad que almacena el resultado final procesado del test.
  */
 @Entity
-@Table(name = "resultados_test") //  Tabla donde Node.js insertará los cálculos
+@Table(name = "resultados")
 @Getter @Setter
-@View(name="VistaPsicologo", members = "Detalle de Evaluación [ idResultado, fechaPrueba ]; estudiante; Resultados [ aciertosUsuario, aciertosMaximos, aciertosMinimos ]")
+@View(name="VistaPsicologo", members = "Detalle de Evaluacion [ id, createdAt ]; estudiante; Resultados [ aciertos, totalPreguntas, porcentaje, tiempoTotal, completado ]")
 public class ResultadoTest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_resultado")
-    private Integer idResultado;
+    @Column(name = "id")
+    private Integer id;
 
-    @Column(name = "fecha_prueba")
-    private LocalDateTime fechaPrueba;
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    // Relación orientada a objetos: Muchos resultados pueden pertenecer a un estudiante (si hace el test 2 veces)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "estudiante_id", referencedColumnName = "id_estudiante")
-    @ReferenceView("Simple") // Muestra un resumen del estudiante
+    @JoinColumn(name = "estudiante_cedula", referencedColumnName = "cedula")
+    @ReferenceView("Simple")
     private Estudiante estudiante;
 
-    @Column(name = "aciertos_usuario")
-    private Integer aciertosUsuario;
+    @Column(name = "aciertos")
+    private Integer aciertos;
 
-    @Column(name = "aciertos_maximos")
-    private Integer aciertosMaximos;
+    @Column(name = "total_preguntas")
+    private Integer totalPreguntas;
 
-    @Column(name = "aciertos_minimos")
-    private Integer aciertosMinimos;
+    @Column(name = "porcentaje")
+    private Integer porcentaje;
 
-    // Campo opcional por si el psicólogo quiere ver el JSON crudo con las respuestas (A, B, C)
-    @Column(name = "respuestas_crudas", columnDefinition = "text")
+    @Column(name = "tiempo_total", length = 20)
+    private String tiempoTotal;
+
+    @Column(name = "completado")
+    private Boolean completado;
+    
+    // Tratamos el JSONB como String en Java para visualizacion rapida
+    @Column(name = "respuestas")
     @Stereotype("MEMO")
-    private String respuestasCrudas;
+    private String respuestas;
 }
