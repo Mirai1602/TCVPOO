@@ -253,7 +253,7 @@
       </div>
       <h2 style="font-size:1.4rem;color:#2c3e50;margin-bottom:8px;">Bienvenido/a</h2>
       <p style="font-size:0.95rem;color:#666;margin-bottom:32px;line-height:1.6;">
-        Selecciona tu perfil para continuar con el Test de Comprensión Verbal.
+        Presiona el botón de estudiante para rellenar tus datos
       </p>
       <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
         <button onclick="showStudentStep()" style="
@@ -280,30 +280,7 @@
           </svg>
           Estudiante
         </button>
-        <button onclick="goToPsychologist()" style="
-          flex: 1;
-          min-width: 140px;
-          background: #27ae60;
-          color: #fff;
-          border: none;
-          padding: 16px 24px;
-          border-radius: 10px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.2s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        "
-        onmouseover="this.style.background='#1e8449'"
-        onmouseout="this.style.background='#27ae60'">
-          <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#fff;" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
-          </svg>
-          Psicólogo
-        </button>
+
       </div>
     </div>
 
@@ -539,7 +516,7 @@
       </form>
     </div>
   </div>
-
+ 
   <script>
     let testStarted = false;
 
@@ -684,7 +661,7 @@
 
       // ─── Send student registration to PostgreSQL via backend API ─────────────
       try {
-        const regResponse = await fetch('http://localhost:3000/api/estudiantes', {
+        const regResponse = await fetch('/api/estudiantes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(window.studentData)
@@ -709,6 +686,8 @@
       testStarted = true;
       startTimer();
     }
+
+    
 
     // Variables globales del cronómetro
     let timerInterval = null;
@@ -818,31 +797,8 @@
           />
           <span id="name-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa tu nombre completo.</span>
         </div>
-        <div style="margin-bottom:28px;">
-          <label for="student-email" style="display:block;font-size:0.9rem;font-weight:600;color:#2c3e50;margin-bottom:6px;">
-            Correo electrónico <span style="color:#e74c3c;">*</span>
-          </label>
-          <input
-            type="email"
-            id="student-email"
-            placeholder="Ej: ana@correo.com"
-            required
-            autocomplete="email"
-            style="
-              width: 100%;
-              padding: 11px 14px;
-              border: 2px solid #e0e0e0;
-              border-radius: 8px;
-              font-size: 0.95rem;
-              outline: none;
-              transition: border-color 0.2s;
-              box-sizing: border-box;
-            "
-            onfocus="this.style.borderColor='#2980b9'"
-            onblur="this.style.borderColor='#e0e0e0'"
-          />
-          <span id="email-error" style="display:none;color:#e74c3c;font-size:0.82rem;margin-top:4px;">Por favor ingresa un correo electrónico válido.</span>
-        </div>
+        
+          
         <button type="submit" style="
           width: 100%;
           background: #2980b9;
@@ -863,68 +819,7 @@
     </div>
   </div>
 
-  <script>
-    // Prevent timer from running until test starts
-    let testStarted = false;
-
-    function showSelectStep() {
-      document.getElementById('step-select').style.display = 'block';
-      document.getElementById('step-student').style.display = 'none';
-    }
-
-    function showStudentStep() {
-      document.getElementById('step-select').style.display = 'none';
-      document.getElementById('step-student').style.display = 'block';
-    }
-
-    function goToPsychologist() {
-      // Replace the href below with the actual OpenXava URL when available
-      window.location.href = '/openxava/Psicologo/index.jsp';
-    }
-
-    function startTest(e) {
-      e.preventDefault();
-      const nameInput = document.getElementById('student-name');
-      const emailInput = document.getElementById('student-email');
-      const nameError = document.getElementById('name-error');
-      const emailError = document.getElementById('email-error');
-      //Y por aquí la validacion del formato de correo
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-     //Si los campos estan vacioos no deja pasar pa iniciar tect
-      let valid = true;
-
-      if (!nameInput.value.trim()) {
-        nameError.style.display = 'block';
-        nameInput.style.borderColor = '#e74c3c';
-        valid = false;
-      } else {
-        nameError.style.display = 'none';
-        nameInput.style.borderColor = '#e0e0e0';
-      }
-
-      if (!emailRegex.test(emailInput.value.trim())) {
-        emailError.style.display = 'block';
-        emailInput.style.borderColor = '#e74c3c';
-        valid = false;
-      } else {
-        emailError.style.display = 'none';
-        emailInput.style.borderColor = '#e0e0e0';
-      }
-
-      if (!valid) return;
-
-      // Store student info
-      window.studentData = {
-        name: nameInput.value.trim(),
-        email: emailInput.value.trim()
-      };
-
-      // Hide overlay and start timer
-      document.getElementById('profile-overlay').style.display = 'none';
-      testStarted = true;
-      startTimer();
-    }
-  </script>
+  <!-- startTest duplicado eliminado: se usa la función async definida en el primer <script> -->
 
   <!-- Navbar -->
   <nav class="navbar" role="banner">
@@ -959,15 +854,12 @@
 
     <div class="section-header">
       <h2>Recuerde que..</h2>
-      <p>Marque la respuesta correcta al lado derecho del número 1 de columna "COMPRENSIÓN VERBAL" de su Hoja de Respuesta. 
+      <p>Marque la opción que usted considera como sorrecta para cada enunciado, puede cambiarlo en cualquier momento si cambia de opinión. 
          Dispondrá de 15 minutos para hacer esta prueba. 
-         Procure hacer el máximo de ejercicios trabajando lo más rápidamente que pueda, sin perder tiempo. Si no encuentra la solución a un ejercicio pase al siguiente: usted puede intentar resolverlo al final si dispone de tiempo. 
-
-
-    
+         Procure hacer el máximo de ejercicios trabajando lo más rápidamente que pueda, sin perder tiempo. Si no encuentra la solución a un ejercicio pase al siguiente: 
+         usted puede intentar resolverlo al final si dispone de tiempo. 
     </p>
     </div>
-
 <style>
   /* Page sections */
   .test-page {
@@ -1144,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     try {
-      const regResponse = await fetch('http://localhost:3000/api/estudiantes', {
+      const regResponse = await fetch('/api/estudiantes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(window.studentData)
@@ -2075,24 +1967,99 @@ function lockForm() {
     Object.keys(respuestasUser).forEach(k => delete respuestasUser[k]);
     document.getElementById('test-form').reset();
   };
+// Solo necesitas la clave de la letra (a, b o c).
+// El objeto respuestasCorrectas ya mapea cada pregunta a su clave correcta.
+// Ejemplo:
+//   q1: 'c'  → la opción C es la correcta para la pregunta 1
+//   q2: 'c'  → la opción C es la correcta para la pregunta 2
+// No hace falta copiar el texto completo de la opción.
+// Las respuestas correctas van en minúsculas: 'a', 'b' o 'c'
+// Así es como se almacenan los valores de los radio buttons (value="a", value="b", value="c")
+// La comparación en evaluarRespuestas() es case-sensitive, así que usa siempre minúsculas.
 
-  // Attempt async POST; navigate regardless of outcome
-  fetch('http://localhost:3000/api/resultados', {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(finalPayload)
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
-        console.log('Respuestas parciales guardadas (ID:', data.id, ')');
-      } else {
-        console.warn('El servidor no pudo guardar las respuestas parciales:', data.error);
-      }
-    })
-    .catch(err => console.warn('No se pudo contactar el servidor al expirar el tiempo:', err))
-    .finally(doRedirect);
+
+// ─── Respuestas correctas ─────────────────────────────────────────────────────
+const respuestasCorrectas = {
+  q1:  'c', // Pregunta 1:  SI LA TECNICA NOS HACE PERDER EL ESPIRITU...
+  q2:  'c', // Pregunta 2:  Y POR TANTO NO PUEDE HACER NADA PARA LA FELICIDAD...
+  q3:  'a', // Pregunta 3:  PARA QUE PONER ESTA PALABRA EN SINGULAR...
+  q4:  'b', // Pregunta 4:  PARA CADA UNO ES BARBARIE AQUELLO QUE NO LE ES FAMILIAR
+  q5:  'a', // Pregunta 5:  EN UN ACTO TAN COMPLEJO COMO ES EL JUICIO ESTETICO...
+  q6:  'b', // Pregunta 6:  RIE BIEN EL QUE RIE ULTIMO
+  q7:  'c', // Pregunta 7:  UNA GOLONDRINA NO HACE VERANO
+  q8:  'c', // Pregunta 8:  LA SOBREPROTECCIÓN RETRASA LA MADUREZ DEL NIÑO...
+  q9:  'a', // Pregunta 9:  QUIEN HA APRENDIDO A MORIR, HA DESAPRENDIDO A SERVIR
+  q10: 'b', // Pregunta 10: LOS PERROS LADRAN, LA CARAVANA SIGUE
+  q11: 'b', // Pregunta 11: LOS ÁRBOLES NO DEJAN VER EL BOSQUE
+  q12: 'c', // Pregunta 12: ES PRECISO QUE UNA PUERTA BONITA SEA PRIMERO UNA PUERTA
+  q13: 'b', // Pregunta 13: PUEDO NEGAR UNA COSA SIN VERME OBLIGADO A DESHONRARLA...
+  q14: 'c', // Pregunta 14: MALDITO SEA AQUEL POR EL CUAL LLEGA EL ESCANDALO
+  q15: 'a', // Pregunta 15: CUANTO MAS ALTO SUBE EL MONO, MAS SE LE VE EL TRASERO
+  q16: 'a', // Pregunta 16: LA PERSONA PRUDENTE RIEGA LENTAMENTE...
+  q17: 'b', // Pregunta 17: CADA DESEO ME HA ENRIQUECIDO MÁS QUE LA POSESION...
+  q18: 'c', // Pregunta 18: QUE IMPORTA LA BOTELLA SIEMPRE QUE SE TENGA LA BORRACHERA
+  q19: 'b', // Pregunta 19: A BURRA VIEJA, ALBARDA NUEVA
+  q20: 'a', // Pregunta 20: TERMINADA LA FIESTA, ADIOS AL SANTO
+  q21: 'b', // Pregunta 21: UNICAMENTE LA RISA ESCAPA AL CONTROL
+  q22: 'a', // Pregunta 22: MUCHAS PERSONAS PODRIAN VER SI SE QUITARAN SUS GAFAS
+  q23: 'c', // Pregunta 23: ES MAS DIFICIL QUE PERDURE LA BUENA FORTUNA QUE LA MALA...
+  q24: 'b', // Pregunta 24: NO HAY GRANDES HOMBRES SIN UN GRAMO DE LOCURA
+  q25: 'b', // Pregunta 25: HABLO CON LA IDEA DE CALLARME... Y HABLO
+  q26: 'c', // Pregunta 26: LA VERDAD ES COMO DIOS, NO SE MUESTRA CON EL ROSTRO DESCUBIERTO
+  q27: 'c', // Pregunta 27: EL ABURRIMIENTO ES QUIZAS UN PRIVILEGIO...
+  q28: 'a', // Pregunta 28: CUANDO NO SE TIENE PELO, SE ENCUENTRAN RIDICULAS LAS CABELLERAS
+  q29: 'b', // Pregunta 29: LO QUE PROBABLEMENTE FALSEA TODA LA VIDA...
+  q30: 'c', // Pregunta 30: DESDE HACE TREINTA Y CINCO AÑOS REVIENTO DE ORGULLO...
+};
+
+// ─── Comparar respuestas y calcular puntaje ──────────────────────────────────
+function evaluarRespuestas(respuestasDelUsuario) {
+  let aciertos = 0;
+  const detalleComparacion = {};
+
+  Object.keys(respuestasCorrectas).forEach(pregunta => {
+    const correcta  = respuestasCorrectas[pregunta];
+    const dada      = respuestasDelUsuario[pregunta] ?? null;
+    const esCorrecta = correcta !== '' && dada !== null && dada === correcta;
+
+    if (esCorrecta) aciertos++;
+
+    detalleComparacion[pregunta] = {
+      respuestaUsuario: dada,
+      respuestaCorrecta: correcta,
+      correcta: esCorrecta
+    };
+  });
+
+  const total = Object.keys(respuestasCorrectas).length;
+
+  const resultadosEstudiante = {
+    estudiante:          window.studentData ?? {},
+    aciertos:            aciertos,
+    totalPreguntas:      total,
+    porcentaje:          Math.round((aciertos / total) * 100),
+    detalle:             detalleComparacion,
+    tiempo_total:        document.getElementById('timer-display')?.textContent ?? '00:00'
+  };
+
+  console.log('Resultados del estudiante:', resultadosEstudiante);
+  return resultadosEstudiante;
 }
+
+  try {
+    const res = await fetch('/api/resultados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...finalPayload, resultados: evaluarRespuestas(capturedAnswers) })
+    });
+    const json = await res.json();
+    if (!json.ok) console.warn('Error al guardar resultado parcial:', json.error);
+  } catch (fetchErr) {
+    console.warn('No se pudo enviar resultado parcial al servidor:', fetchErr);
+  } finally {
+    doRedirect();
+  }
+ 
 
 const MAX_SECONDS = 25 * 60;
 
@@ -2168,7 +2135,7 @@ document.getElementById('test-form').addEventListener('submit', async function (
   console.log('Payload a enviar:', payload);
 
   try {
-    const response = await fetch('http://localhost:3000/api/resultados', {
+    const response = await fetch('/api/resultados', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
