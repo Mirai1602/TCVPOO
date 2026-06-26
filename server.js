@@ -32,7 +32,6 @@ async function initDB() {
         zona          VARCHAR(20),
         colegio       VARCHAR(200),
         tipo_colegio  VARCHAR(20),
-        correo        VARCHAR(200),
         created_at    TIMESTAMPTZ DEFAULT NOW()
       );
     `);
@@ -64,7 +63,7 @@ app.post('/api/estudiantes', async (req, res) => {
   const {
     nombre, cedula, edad, sexo,
     departamento, municipio, zona,
-    colegio, tipo_colegio, correo
+    colegio, tipo_colegio
   } = req.body;
 
   if (!nombre) {
@@ -74,10 +73,10 @@ app.post('/api/estudiantes', async (req, res) => {
   try {
     const result = await pool.query(
       `INSERT INTO estudiantes
-         (nombre, cedula, edad, sexo, departamento, municipio, zona, colegio, tipo_colegio, correo)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+         (nombre, cedula, edad, sexo, departamento, municipio, zona, colegio, tipo_colegio)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
        RETURNING id`,
-      [nombre, cedula, edad, sexo, departamento, municipio, zona, colegio, tipo_colegio, correo]
+      [nombre, cedula, edad, sexo, departamento, municipio, zona, colegio, tipo_colegio]
     );
     res.json({ ok: true, id: result.rows[0].id });
   } catch (err) {
